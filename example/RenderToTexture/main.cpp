@@ -254,7 +254,7 @@ int main()
 
 	//读取模型
 	osg::Node* loadedModel = new osg::Node();
-	loadedModel = osgDB::readNodeFile("E:/3rdpart/OSG/OpenSceneGraph-3.0.1-VS10.0.30319-x64/data/cessna.osg");
+	loadedModel = osgDB::readNodeFile("F:/3rdpart/OSG/OpenSceneGraph/data/cessna.osg");
 
 	//创建一个transform节点,用来选装该子场景
 	osg::MatrixTransform* loadedModelTransform = new osg::MatrixTransform;

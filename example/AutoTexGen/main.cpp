@@ -24,7 +24,7 @@
 osg::StateSet* createTexture2DState()
 {
 	osg::Image* image = new osg::Image();
-	image = osgDB::readImageFile("E:/SourceCode/OSG/OSGData/Robot/right/road2.jpg");
+	image = osgDB::readImageFile("F:/3rdpart/OSG/OpenSceneGraph/data/Images/road.jpg");
 
 	//创建二维纹理
 	osg::Texture2D* texture = new osg::Texture2D;
@@ -65,7 +65,10 @@ int main()
 
 	//osg::Node* node = new osg::Node() ;
 	//node = osgDB::readNodeFile("E:/SourceCode/OSG/OSGData/Robot/right/car.ive");
-	osg::ref_ptr<osg::Node> node = osgDB::readNodeFile("E:/SourceCode/OSG/OSGData/Robot/right/car.ive");
+	osg::ref_ptr<osg::Node> node = osgDB::readNodeFile("E:/SourceCode/OSG/OSGData/Robot/right/surface.ive");
+
+	osg::ref_ptr<osg::Geode> test=new osg::Geode;
+	test->addDrawable(new osg::ShapeDrawable(new osg::Box(osg::Vec3(0.0f,0.0f,0.0f),80000,60000,25)));
 
 	osg::ref_ptr<osg::Geode> sphere=new osg::Geode;
 	sphere->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0,0.0,0.0),120)));

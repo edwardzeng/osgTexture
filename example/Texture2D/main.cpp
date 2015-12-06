@@ -85,7 +85,7 @@ int main()
 
 	//¶ÁÈ¡ÌùÍ¼ÎÄ¼þ
 	osg::Image* image = new osg::Image();
-	image = osgDB::readImageFile("E:/SourceCode/OSG/OSGData/Robot/road.jpg");
+	image = osgDB::readImageFile("F:/3rdpart/OSG/OpenSceneGraph/data/Images/primitives.jpg");
 
 	osg::Node* node = new osg::Node();
 	node = createNode();

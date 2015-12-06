@@ -26,10 +26,10 @@ int main()
 	osg::Group* root = new osg::Group();
 
 	osg::Node* node = new osg::Node();
-	node= osgDB::readNodeFile("E:\\3rdpart\\OSG\\OpenSceneGraph-3.0.1-VS10.0.30319-x64\\data\\cow.osg");
+	node= osgDB::readNodeFile("F:/3rdpart/OSG/OpenSceneGraph/data/cow.osg");
 
 	//∂¡»°Ã˘Õº
-	osg::Image* image = osgDB::readImageFile("E:/3rdpart/OSG/OpenSceneGraph-3.0.1-VS10.0.30319-x64/data/Images/primitives.gif");
+	osg::Image* image = osgDB::readImageFile("F:/3rdpart/OSG/OpenSceneGraph/data//Images/primitives.gif");
 
 	if (image)
 	{
