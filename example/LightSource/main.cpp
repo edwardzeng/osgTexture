@@ -94,11 +94,6 @@ osg::Group* createLight1(osg::Node* node)
 	//stateset->setMode(GL_LIGHT1,osg::StateAttribute::ON);
 	//stateset->setMode(GL_LIGHT2,osg::StateAttribute::ON);
 
-	//计算包围盒
-	osg::BoundingSphere bs ;
-	//node->computeBound() ;
-	//bs=node->getBound() ;
-
 	//创建一个Light对象
 	osg::Light* light = new osg::Light();
 	light->setLightNum(1);
@@ -108,18 +103,15 @@ osg::Group* createLight1(osg::Node* node)
 	light->setPosition(osg::Vec4(-6.4f,-1.96f,16.0f,1.0f));
 
 	osg::ref_ptr<osg::Geode> sphere =new osg::Geode;
-	sphere->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0f,0.0f,0.0f),2)));
-	//osg::ref_ptr<osg::MatrixTransform> trans=new osg::MatrixTransform;
-	//trans->setMatrix(osg::Matrix::translate(354.0f,-627.5f,750.0f));
+	sphere->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(0.0f,0.0f,0.0f),0.5)));
 	osg::ref_ptr<osg::PositionAttitudeTransform> position=new osg::PositionAttitudeTransform;
 	position->setPosition(osg::Vec3(-6.4f,-1.96f,16.0f));
 	position->addChild(sphere);
 
-	//light->setPosition(osg::Vec4(bs.center().x(),bs.center().y(),bs.center().z()+bs.radius(),1.0f));
 	//设置环境光的颜色
-	light->setAmbient(osg::Vec4(1.6f,1.6f,1.6f,1.0f));
+	light->setAmbient(osg::Vec4(0.2f,0.2f,0.2f,1.0f));
 	//设置散射光的颜色
-	light->setDiffuse(osg::Vec4(1.2f,1.2f,1.2f,1.0f));
+	light->setDiffuse(osg::Vec4(1.0f,0.0f,0.0f,1.0f));
 
 	//设置恒衰减指数
 	light->setConstantAttenuation(1.0f);
@@ -134,9 +126,6 @@ osg::Group* createLight1(osg::Node* node)
 	lightSource->setLocalStateSetModes(osg::StateAttribute::ON);
 	lightSource->setStateSetModes(*stateset,osg::StateAttribute::ON);
 
-	//osg::Geode* ball= new osg::Geode();
-	//ball->addDrawable(new osg::ShapeDrawable(new osg::Sphere(osg::Vec3(), 2)));
-
 	lightRoot->addChild(lightSource);
 	lightRoot->addChild(position);
 	return lightRoot ;
@@ -150,7 +139,7 @@ int main()
 
 	//读取模型
 	osg::Node* node = new osg::Node() ;
-	node = osgDB::readNodeFile("E:/3rdpart/OSG/OpenSceneGraph-3.0.1-VS10.0.30319-x64/data/dumptruck.osgt");
+	node = osgDB::readNodeFile("F:/3rdpart/OSG/OpenSceneGraph/data/dumptruck.osgt");
 
 	//向场景中添加光源
 	root->addChild(createLight1(node));
