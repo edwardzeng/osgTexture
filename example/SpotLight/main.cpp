@@ -4,7 +4,6 @@
 **********************************************************/
 
 #include <osgViewer/Viewer>
-
 #include <osg/Node>
 #include <osg/Geode>
 #include <osg/Geometry>
@@ -18,14 +17,10 @@
 #include <osg/ShapeDrawable>
 #include <osg/Texture2D>
 #include <osg/TexGenNode>
-
 #include <osgDB/ReadFile>
 #include <osgDB/WriteFile>
-
 #include <osgUtil/Optimizer>
-
 #include <iostream>
-
 #include "Tex.h"
 
 //创建聚光灯纹理的mipmap贴图
@@ -71,13 +66,16 @@ osg::StateSet* createSpotLightDecoratorState(unsigned int lightNum, unsigned int
 	osg::Vec4 centerColour(1.0f,1.0f,1.0f,1.0f);
 	osg::Vec4 ambientColour(0.05f,0.05f,0.05f,1.0f); 
 
-	//创建聚光灯纹理
+	//创建聚光灯纹理，纹理单元是  1
+	osg::Image* image = osgDB::readImageFile("F:/3rdpart/OSG/OpenSceneGraph/data/Images/osg64.jpg");
+
 	osg::Texture2D* texture = new osg::Texture2D();
-	texture->setImage(createSpotLightImage(centerColour, ambientColour, 64, 1.0));
+	texture->setImage(image);
+	//texture->setImage(createSpotLightImage(centerColour, ambientColour, 64, 1.0));
 	texture->setBorderColor(osg::Vec4(ambientColour));
-	texture->setWrap(osg::Texture::WRAP_S,osg::Texture::CLAMP_TO_BORDER);
-	texture->setWrap(osg::Texture::WRAP_T,osg::Texture::CLAMP_TO_BORDER);
-	texture->setWrap(osg::Texture::WRAP_R,osg::Texture::CLAMP_TO_BORDER);
+	texture->setWrap(osg::Texture::WRAP_S,osg::Texture::REPEAT);
+	texture->setWrap(osg::Texture::WRAP_T,osg::Texture::REPEAT);
+	texture->setWrap(osg::Texture::WRAP_R,osg::Texture::REPEAT);
 
 	//打开纹理单元
 	stateset->setTextureAttributeAndModes(textureUnit, texture, osg::StateAttribute::ON);
@@ -119,8 +117,7 @@ osg::Node* createSpotLightNode(const osg::Vec3& position, const osg::Vec3& direc
 	//设置模式为视觉线性
 	texgen->setMode(osg::TexGen::EYE_LINEAR);
 	//从视图中指定参考平面
-	texgen->setPlanesFromMatrix(osg::Matrixd::lookAt(position, position+direction, up)*
-		osg::Matrixd::perspective(angle,1.0,0.1,100));
+	texgen->setPlanesFromMatrix(osg::Matrixd::lookAt(position, position+direction, up)*osg::Matrixd::perspective(angle,1.0,0.1,100));
 
 	group->addChild(texgenNode);
 
@@ -160,12 +157,12 @@ osg::Node* createBase(const osg::Vec3& center,float radius)
 	osg::Geode* geode = new osg::Geode;
 
 	osg::StateSet* stateset = new osg::StateSet();
-	osg::Image* image = osgDB::readImageFile("E:/3rdpart/OSG/OpenSceneGraph-3.0.1-VS10.0.30319-x64/data/Images/lz.rgb");
+	osg::Image* image = osgDB::readImageFile("F:/3rdpart/OSG/OpenSceneGraph/data/Images/lz.rgb");
 	if (image)
 	{
 		osg::Texture2D* texture = new osg::Texture2D;
 		texture->setImage(image);
-		stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
+		stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);//与光源的纹理单元不同，光的纹理单元是1
 	}
 
 	geode->setStateSet( stateset );
@@ -191,7 +188,7 @@ osg::Node* createBase(const osg::Vec3& center,float radius)
 		}
 	}
 
-	float hieghtScale = radius*0.5f/(maxHeight-minHeight);
+	float heightScale = radius*0.5f/(maxHeight-minHeight);
 	float hieghtOffset = -(minHeight+maxHeight)*0.5f;
 
 	for(r=0;r<39;++r)
@@ -199,7 +196,7 @@ osg::Node* createBase(const osg::Vec3& center,float radius)
 		for(unsigned int c=0;c<38;++c)
 		{
 			float h = vertex[r+c*39][2];
-			grid->setHeight(c,r,(h+hieghtOffset)*hieghtScale);
+			grid->setHeight(c,r,(h+hieghtOffset)*heightScale);
 		}
 	}
 
@@ -221,7 +218,7 @@ osg::Node* createMovingModel(const osg::Vec3& center, float radius)
 
 	osg::Group* model = new osg::Group;
 
-	osg::Node* cessna = osgDB::readNodeFile("E:/3rdpart/OSG/OpenSceneGraph-3.0.1-VS10.0.30319-x64/data/cessna.osg");
+	osg::Node* cessna = osgDB::readNodeFile("F:/3rdpart/OSG/OpenSceneGraph/data/cessna.osg");
 	if (cessna)
 	{
 		const osg::BoundingSphere& bs = cessna->getBound();
@@ -287,9 +284,8 @@ int main()
 	optimizer.optimize(root) ;
 
 	viewer->setSceneData(root);
-
+	viewer->setUpViewInWindow(300,100,800,600);
 	viewer->realize();
-
 	viewer->run();
 
 	return 0 ;

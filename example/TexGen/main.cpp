@@ -86,8 +86,10 @@ protected:
 		osg::Vec2Array* n2a = dynamic_cast<osg::Vec2Array*>(nx);
 		osg::Vec3Array* n3a = dynamic_cast<osg::Vec3Array*>(nx);
 		osg::Vec4Array* n4a = dynamic_cast<osg::Vec4Array*>(nx);
+
 		unsigned number=vx->getNumElements();
 		osg::ref_ptr<osg::Vec2Array> tc = new osg::Vec2Array;
+
 		for (unsigned i=0; i<number; ++i) {
 
 			osg::Vec3 P;

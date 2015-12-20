@@ -35,6 +35,15 @@ osg::Node* createNode()
 	vc->push_back(osg::Vec3(1.0f,0.0f,1.0f));
 	vc->push_back(osg::Vec3(0.0f,0.0f,1.0f));
 
+	vc->push_back(osg::Vec3(0.0f,0.0f,1.0f));
+	vc->push_back(osg::Vec3(1.0f,0.0f,1.0f));
+	vc->push_back(osg::Vec3(1.0f,0.0f,2.0f));
+	vc->push_back(osg::Vec3(0.0f,0.0f,2.0f));
+
+	vc->push_back(osg::Vec3(0.0f,0.0f,2.0f));
+	vc->push_back(osg::Vec3(1.0f,0.0f,2.0f));
+	vc->push_back(osg::Vec3(1.0f,0.0f,3.0f));
+	vc->push_back(osg::Vec3(0.0f,0.0f,3.0f));
 	geom->setVertexArray(vc);
 
 	//设置纹理坐标
@@ -44,21 +53,35 @@ osg::Node* createNode()
 	vt->push_back(osg::Vec2(1.0f,1.0f));
 	vt->push_back(osg::Vec2(0.0f,1.0f));
 
+	vt->push_back(osg::Vec2(0.0f,0.0f));
+	vt->push_back(osg::Vec2(1.0f,0.0f));
+	vt->push_back(osg::Vec2(1.0f,1.0f));
+	vt->push_back(osg::Vec2(0.0f,1.0f));
+
+	vt->push_back(osg::Vec2(0.0f,0.0f));
+	vt->push_back(osg::Vec2(1.0f,0.0f));
+	vt->push_back(osg::Vec2(1.0f,1.0f));
+	vt->push_back(osg::Vec2(0.0f,1.0f));
+
 	geom->setTexCoordArray(0,vt);
 
 	//设置法线
 	osg::Vec3Array* nc = new osg::Vec3Array();
-	nc->push_back(osg::Vec3(0.0f,-1.0f,0.0f));
+	nc->push_back(osg::Vec3(0.0f,-1.0f,0.0f));//指向屏幕
 
 	geom->setNormalArray(nc);
 	geom->setNormalBinding(osg::Geometry::BIND_OVERALL);
 
 	//添加图元
-	geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,0,4));
-
+	int faceNum=0;
+	for (int i=0;i<3;++i)
+	{
+		geom->addPrimitiveSet(new osg::DrawArrays(osg::PrimitiveSet::QUADS,faceNum,4));
+		faceNum +=4;
+	}
+	
 	//绘制
 	geode->addDrawable(geom);
-
 	return (osg::Node*)(geode);
 }
 
@@ -69,22 +92,23 @@ osg::StateSet* createTexture2DState(osg::Image* image)
 	osg::StateSet* stateset = new osg::StateSet();
 
 	//创建二维纹理对象
-	osg::TextureRectangle* texture = new osg::TextureRectangle();
-	texture->setDataVariance(osg::Object::DYNAMIC);
+
+	osg::Texture2D* texture = new osg::Texture2D;
+	texture->setDataVariance(osg::Object::STATIC);
 	//设置贴图
 	texture->setImage(image);
 
-	//设置纹理矩阵，并设置为根据矩阵纹理(TextureRectangle)的大小自动缩放
-	//从而允许应用一个矩形纹理到一个纹理坐标不在0-1上
-	osg::TexMat* texmat = new osg::TexMat;
-	texmat->setScaleByTextureRectangleSize(true);
-
 	//启用纹理及纹理矩阵
-	stateset->setTextureAttributeAndModes(0,texmat,osg::StateAttribute::ON);
 	stateset->setTextureAttributeAndModes(0,texture,osg::StateAttribute::ON);
 
 	//关闭光照
 	stateset->setMode(GL_LIGHTING,osg::StateAttribute::OFF);
+	stateset->setTextureAttribute(0,texture,osg::StateAttribute::OVERRIDE);
+	stateset->setTextureMode(0,GL_TEXTURE_2D,osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+
+	//启用纹理坐标生成器
+	//stateset->setTextureMode(0,GL_TEXTURE_GEN_S,osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
+	//stateset->setTextureMode(0,GL_TEXTURE_GEN_T,osg::StateAttribute::ON|osg::StateAttribute::OVERRIDE);
 
 	return stateset ;
 }
@@ -114,12 +138,9 @@ int main()
 	//优化场景数据
 	osgUtil::Optimizer optimizer ;
 	optimizer.optimize(root) ;
-
+	viewer->setUpViewInWindow(300,100,800,600);
 	viewer->setSceneData(root);
-
 	viewer->realize();
-
 	viewer->run();
-
 	return 0 ;
 }
